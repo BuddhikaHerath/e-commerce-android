@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="false"
     android:orientation="vertical">
 
 
@@ -13,26 +14,32 @@
         <LinearLayout
             android:id="@+id/linear_row_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="281dp"
             android:orientation="vertical"
             android:padding="16dp">
 
             <TextView
                 android:id="@+id/textViewHeading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="192dp"
+                android:layout_height="47dp"
                 android:text="heading" />
-
-            <TextView
-                android:id="@+id/textDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="description" />
 
             <ImageView
                 android:id="@+id/imageViewList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="323dp"
+                android:layout_height="131dp" />
+
+            <TextView
+                android:id="@+id/textDescription"
+                android:layout_width="284dp"
+                android:layout_height="43dp"/>
+
+            <TextView
+                android:id="@+id/textPrice"
+                android:layout_width="284dp"
+                android:layout_height="43dp"/>
+
+
         </LinearLayout>
 
 

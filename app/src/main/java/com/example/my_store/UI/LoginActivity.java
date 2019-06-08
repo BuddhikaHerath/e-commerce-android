@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.my_store.Model.Product;
 import com.example.my_store.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -18,17 +19,16 @@ public class LoginActivity extends AppCompatActivity {
 
         login_btn = (Button) findViewById(R.id.login_btn);
 
-
-
-
-
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(LoginActivity.this, Product_List.class);
                 startActivity(intent);
             }
         });
+
+
 
     }
 }

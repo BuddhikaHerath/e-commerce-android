@@ -39,8 +39,8 @@ public class Product_List extends AppCompatActivity {
 
         products = new ArrayList<>();
 
-//        adapter = new ProductAdapter(products, this);
-//        recyclerView.setAdapter(adapter);
+        adapter = new ProductAdapter(products, this);
+        recyclerView.setAdapter(adapter);
         loadRecylerViewData();
 
     }
