@@ -1,44 +1,30 @@
-package com.example.my_store.Model;
+package com.example.my_store.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 
-public class Product {
-
+public class ProductDTO {
     @SerializedName("id")
     private long id;
-
-
     @SerializedName("description")
     private String description;
-
     @SerializedName("title")
     private String title;
-
     @SerializedName("quantity")
-    private int quantity;
-
+     private int quantity;
     @SerializedName("price")
     private double price;
-
     @SerializedName("image")
-    private byte[] image;
-
+    private String image;
+    @SerializedName("imagePath")
+    private String imagePath;
     @SerializedName("company")
-    private String company;
+   private String company;
+    @SerializedName("orderProductDTOList")
+    private List<OrderProductDTO> orderProductDTOList;
 
-    public Product(){
-
-    }
-
-    public Product(String description, String title) {
-        this.id = id;
-        this.description = description;
-        this.title = title;
-        this.quantity = quantity;
-        this.price = price;
-        this.image = image;
-        this.company = company;
+    public ProductDTO() {
     }
 
     public long getId() {
@@ -81,12 +67,20 @@ public class Product {
         this.price = price;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage( byte[] image) {
+    public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public String getCompany() {
@@ -95,5 +89,13 @@ public class Product {
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public List<OrderProductDTO> getOrderProductDTOList() {
+        return orderProductDTOList;
+    }
+
+    public void setOrderProductDTOList(List<OrderProductDTO> orderProductDTOList) {
+        this.orderProductDTOList = orderProductDTOList;
     }
 }

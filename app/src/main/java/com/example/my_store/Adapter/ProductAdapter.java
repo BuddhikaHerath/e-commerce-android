@@ -1,8 +1,13 @@
 package com.example.my_store.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.my_store.Model.Product;
 import com.example.my_store.R;
+import com.example.my_store.UI.DetailsActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,16 +26,7 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     private List<Product> products;
     private Context context;
-    private OnItemClickListener mListener;
 
-
-    public interface OnItemClickListener{
-        void onItemCLick(int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener = listener;
-    }
 
     public ProductAdapter(List<Product> products, Context context) {
         this.products = products;
@@ -46,25 +43,25 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         final Product product = products.get(position);
+        System.err.println("product "+product);
         holder.textViewHead.setText(String.valueOf(product.getTitle()));
         holder.textDescription.setText(String.valueOf(product.getCompany()));
         holder.textPrice.setText(String.valueOf(product.getPrice()));
-        Picasso.with(context)
-                .load(product.getImage())
-                .into(holder.imageView);
+        byte[] decodedString = product.getImage();
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.imageView.setImageBitmap(decodedByte);
 
 
-//        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(context, "Clicked" + product.getTitle(), Toast.LENGTH_LONG).show();
-////
-//                Intent intent = new Intent(context, View_Product.class);
-//                Gson gson = new Gson();
-//                String productObject = gson.toJson(product);
-//                intent.putExtra("product", productObject);
-//                context.startActivity(intent);
-
+        holder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, DetailsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putLong("id",product.getId());
+                i.putExtras(bundle);
+                context.startActivity(i);
+            }
+        });
 
     }
 
@@ -79,6 +76,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         public TextView textPrice;
         public ImageView imageView;
         public LinearLayout linearLayout;
+        public View container;
 
 
 
@@ -90,18 +88,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             imageView = (ImageView) itemView.findViewById(R.id.imageViewList);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linear_row_id);
             textPrice = (TextView) itemView.findViewById(R.id.textPrice);
+            container = itemView;
 
-      itemView.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              if(mListener !=null){
-                  int position = getAdapterPosition();
-                  if(position != RecyclerView.NO_POSITION){
-                      mListener.onItemCLick(position);
-                  }
-              }
-          }
-      });
         }
 
 
