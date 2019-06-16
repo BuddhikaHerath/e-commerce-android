@@ -26,6 +26,7 @@ import com.example.my_store.dto.ProductDTO;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,10 +34,11 @@ import retrofit2.Response;
 public class DetailsActivity extends AppCompatActivity {
 
     private Product product;
-    private Button addtocart;
+    private Button addtocart,decrementBtn,incrementBtn;
     private ImageView mobimage;
-    private TextView pmodel, pcompany, pPrice, pdetails;
+    private TextView pmodel, pcompany, pPrice, pdetails, txtQuantity, txtTotal;
     private Long id;
+    private int qty = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,10 @@ public class DetailsActivity extends AppCompatActivity {
         pPrice = (TextView) findViewById(R.id.itemPrice);
         pdetails = (TextView) findViewById(R.id.itemDetails);
         addtocart = findViewById(R.id.btnAddToCart);
+        decrementBtn = findViewById(R.id.details_DecrementBtn);
+        incrementBtn = findViewById(R.id.details_IncrementBtn);
+        txtQuantity = findViewById(R.id.product_qty);
+        txtTotal = findViewById(R.id.productTotal);
 
         Intent intent = new Intent();
 
@@ -93,6 +99,9 @@ public class DetailsActivity extends AppCompatActivity {
                         decodedString = product.getImage();
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         mobimage.setImageBitmap(decodedByte);
+
+                        txtQuantity.setText(String.valueOf(qty));
+                        txtTotal.setText(String.valueOf(qty*product.getPrice()));
                     }
                 }
 
@@ -112,7 +121,89 @@ public class DetailsActivity extends AppCompatActivity {
                 AddToCart(v);
             }
         });
+        decrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decrementQty(v);
+            }
+        });
+        incrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                incrementQty(v);
+            }
+        });
 
+
+    }
+
+    private void incrementQty(View view) {
+        SharedPreferences shared = getSharedPreferences("login",getApplicationContext().MODE_PRIVATE);
+        User user = new User();
+        user.setUsername(shared.getString("username",""));
+        user.setUsername(shared.getString("password",""));
+
+
+        ProductService productService = APICLIENT.getClientWithAuth(user.getUsername(),user.getPassword()).create(ProductService.class);
+        Call<ResponseBody> call = productService.getQty(product.getId(),(qty+1));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.err.println(response);
+                if (response.isSuccessful()) {
+                    qty+=1;
+                    txtQuantity.setText(String.valueOf(qty));
+                    txtTotal.setText(String.valueOf(qty*product.getPrice()));
+                    System.err.println("Increment Successfully!");
+                    Toast.makeText(getApplicationContext(), "Increment Successfully!", Toast.LENGTH_SHORT);
+//                    Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+//                    startActivity(intent);
+                }else{
+                    System.err.println("Increment un-Successfully!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.err.println(t.getMessage());
+            }
+
+        });
+    }
+
+    private void decrementQty(View view) {
+        SharedPreferences shared = getSharedPreferences("login",getApplicationContext().MODE_PRIVATE);
+        User user = new User();
+        user.setUsername(shared.getString("username",""));
+        user.setUsername(shared.getString("password",""));
+
+
+        ProductService productService = APICLIENT.getClientWithAuth(user.getUsername(),user.getPassword()).create(ProductService.class);
+        Call<ResponseBody> call = productService.getQty(product.getId(),(qty-1));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    qty-=1;
+                    txtQuantity.setText(String.valueOf(qty));
+                    txtTotal.setText(String.valueOf(qty*product.getPrice()));
+                    System.err.println("Decremented Successfully!");
+                    Toast.makeText(getApplicationContext(), "Decremented Successfully!", Toast.LENGTH_SHORT);
+//                    Intent intent = new Intent(getApplicationContext(), CartActivity.class);
+//                    startActivity(intent);
+                }else{
+                    System.err.println("Decrement un-Successfully!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.err.println(t.getMessage());
+            }
+
+        });
     }
 
     public void AddToCart(View view) {
@@ -122,7 +213,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         OrderProducts orderProd = new OrderProducts();
         orderProd.setProduct(product);
-        orderProd.setQuantity(1);
+        orderProd.setQuantity(qty);
         List<OrderProducts> orderProdsList = new ArrayList<>();
         orderProdsList.add(orderProd);
 
@@ -137,8 +228,8 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<OrderProducts> call, Response<OrderProducts> response) {
                 if (response.isSuccessful()) {
-
-                    Toast.makeText(getApplicationContext(), "Successfully added to the cart", Toast.LENGTH_SHORT);
+                    System.out.println("Successfully added to the cart");
+                    Toast.makeText(DetailsActivity.this, "Successfully added to the cart", Toast.LENGTH_SHORT);
 //                    Intent intent = new Intent(getApplicationContext(), CartActivity.class);
 //                    startActivity(intent);
                 }

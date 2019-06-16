@@ -141,7 +141,7 @@ public class Cart extends AppCompatActivity {
 
                     }
                     System.err.println("Get cart sucess "+orderProducts.size());
-                    adapter = new CartAdapter(orderProducts, getApplicationContext(),lblTotal);
+                    adapter = new CartAdapter(orderProducts, getApplicationContext(),lblTotal,Cart.this);
                     recyclerView.setAdapter(adapter);
                     //adapter.notifyDataSetChanged();
                     calc();

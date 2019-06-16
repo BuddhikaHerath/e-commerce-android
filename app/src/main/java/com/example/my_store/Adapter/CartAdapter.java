@@ -24,6 +24,7 @@ import com.example.my_store.Model.Orders;
 import com.example.my_store.Model.User;
 import com.example.my_store.R;
 import com.example.my_store.Services.CartService;
+import com.example.my_store.UI.Cart;
 import com.example.my_store.UI.DetailsActivity;
 import com.google.gson.Gson;
 
@@ -39,11 +40,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private List<OrderProducts> orderProducts;
     private Context context;
     private TextView totalText;
+    private Cart cart;
 
-    public CartAdapter(List<OrderProducts> orderProducts, Context context, TextView totalText) {
+    public CartAdapter(List<OrderProducts> orderProducts, Context context, TextView totalText, Cart cart) {
         this.orderProducts = orderProducts;
         this.context = context;
         this.totalText = totalText;
+        this.cart = cart;
     }
 
 
@@ -57,9 +60,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final OrderProducts orderProduct = orderProducts.get(position);
         holder.textViewHead.setText(String.valueOf(orderProduct.getProduct().getTitle()));
-        holder.textDescription.setText(String.valueOf(orderProduct.getQuantity()));
+       // holder.textDescription.setText(String.valueOf(orderProduct.getQuantity()));
 
-        System.err.println("image "+orderProduct.getProduct().getImage());
+        System.err.println("image " + orderProduct.getProduct().getImage());
         byte[] decodedString = orderProduct.getProduct().getImage();
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         holder.imageView.setImageBitmap(decodedByte);
@@ -73,111 +76,99 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
                 Intent i = new Intent(context, DetailsActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putLong("id",orderProduct.getProduct().getId());
+                bundle.putLong("id", orderProduct.getProduct().getId());
                 i.putExtras(bundle);
                 context.startActivity(i);
-            }
-        });
-
-        holder.decrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                decrementBtn(orderProduct,position);
-            }
-        });
-        holder.incrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                incrementBtn(orderProduct,position);
+                cart.finish();
             }
         });
     }
 
-    private void incrementBtn(final OrderProducts orderProduct, final int position) {
-        System.err.println("prod d : "+orderProduct.getProduct().getId());
-        SharedPreferences shared = context.getSharedPreferences("login",context.MODE_PRIVATE);
-        User user = new User();
-        user.setUsername(shared.getString("username",""));
+//    private void incrementBtn(final OrderProducts orderProduct, final int position) {
+//        System.err.println("prod d : " + orderProduct.getProduct().getId());
+//        SharedPreferences shared = context.getSharedPreferences("login", context.MODE_PRIVATE);
+//        User user = new User();
+//        user.setUsername(shared.getString("username", ""));
+//
+//        final OrderProducts op = new OrderProducts();
+//        op.setProduct(orderProduct.getProduct());
+//        op.setQuantity(1 + orderProduct.getQuantity());
+//        List<OrderProducts> orderProds = new ArrayList<>();
+//        orderProds.add(op);
+//
+//        Orders order = new Orders();
+//        order.setUser(user);
+//        order.setCartOrders(orderProds);
+//
+//        CartService cartService = APICLIENT.getClient().create(CartService.class);
+//        Call<OrderProducts> call = cartService.updateCart(order);
+//
+//        call.enqueue(new Callback<OrderProducts>() {
+//            @Override
+//            public void onResponse(Call<OrderProducts> call, Response<OrderProducts> response) {
+//
+//                if (response.isSuccessful()) {
+//                    System.err.println("Order Product incremented Successfully!");
+//                    orderProduct.setQuantity(op.getQuantity());
+//                    orderProducts.set(position, orderProduct);
+//                    CartAdapter.this.notifyDataSetChanged();
+//                    TotalCal();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<OrderProducts> call, Throwable t) {
+//
+//            }
+//
+//        });
+//
+//    }
+//
+//    private void decrementBtn(final OrderProducts orderProduct, final int position) {
+//        SharedPreferences shared = context.getSharedPreferences("login", context.MODE_PRIVATE);
+//        User user = new User();
+//        user.setUsername(shared.getString("username", ""));
+//
+//        final OrderProducts op = new OrderProducts();
+//        op.setProduct(orderProduct.getProduct());
+//        op.setQuantity(-1 + orderProduct.getQuantity());
+//        List<OrderProducts> orderProds = new ArrayList<>();
+//        orderProds.add(op);
+//
+//        Orders order = new Orders();
+//        order.setUser(user);
+//        order.setCartOrders(orderProds);
+//
+//        CartService cartService = APICLIENT.getClient().create(CartService.class);
+//        Call<OrderProducts> call = cartService.updateCart(order);
+//
+//        call.enqueue(new Callback<OrderProducts>() {
+//            @Override
+//            public void onResponse(Call<OrderProducts> call, Response<OrderProducts> response) {
+//
+//
+//                if (response.isSuccessful()) {
+//                    System.err.println("Order Product decremented Successfully!");
+//                    orderProduct.setQuantity(op.getQuantity());
+//                    orderProducts.set(position, orderProduct);
+//                    CartAdapter.this.notifyDataSetChanged();
+//                    TotalCal();
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<OrderProducts> call, Throwable t) {
+//
+//            }
+//
+//        });
+//    }
 
-        final OrderProducts op = new OrderProducts();
-        op.setProduct(orderProduct.getProduct());
-        op.setQuantity(1+orderProduct.getQuantity());
-        List<OrderProducts> orderProds = new ArrayList<>();
-        orderProds.add(op);
-
-        Orders order = new Orders();
-        order.setUser(user);
-        order.setCartOrders(orderProds);
-
-        CartService cartService = APICLIENT.getClient().create(CartService.class);
-        Call<OrderProducts> call = cartService.updateCart(order);
-
-        call.enqueue(new Callback<OrderProducts>() {
-            @Override
-            public void onResponse(Call<OrderProducts> call, Response<OrderProducts> response) {
-
-                if (response.isSuccessful()) {
-                    System.err.println("Order Product incremented Successfully!");
-                    orderProduct.setQuantity(op.getQuantity());
-                    orderProducts.set(position,orderProduct);
-                    CartAdapter.this.notifyDataSetChanged();
-                    TotalCal();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OrderProducts> call, Throwable t) {
-
-            }
-
-        });
-
-    }
-
-    private void decrementBtn(final OrderProducts orderProduct, final int position) {
-        SharedPreferences shared = context.getSharedPreferences("login",context.MODE_PRIVATE);
-        User user = new User();
-        user.setUsername(shared.getString("username",""));
-
-        final OrderProducts op = new OrderProducts();
-        op.setProduct(orderProduct.getProduct());
-        op.setQuantity(-1+orderProduct.getQuantity());
-        List<OrderProducts> orderProds = new ArrayList<>();
-        orderProds.add(op);
-
-        Orders order = new Orders();
-        order.setUser(user);
-        order.setCartOrders(orderProds);
-
-        CartService cartService = APICLIENT.getClient().create(CartService.class);
-        Call<OrderProducts> call = cartService.updateCart(order);
-
-        call.enqueue(new Callback<OrderProducts>() {
-            @Override
-            public void onResponse(Call<OrderProducts> call, Response<OrderProducts> response) {
-
-
-                if (response.isSuccessful()) {
-                    System.err.println("Order Product decremented Successfully!");
-                    orderProduct.setQuantity(op.getQuantity());
-                    orderProducts.set(position,orderProduct);
-                    CartAdapter.this.notifyDataSetChanged();
-                    TotalCal();
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OrderProducts> call, Throwable t) {
-
-            }
-
-        });
-    }
-
-    private void TotalCal(){
-        double total=0;
-        for(OrderProducts orderProd : orderProducts){
+    private void TotalCal() {
+        double total = 0;
+        for (OrderProducts orderProd : orderProducts) {
             total += orderProd.getQuantity() * orderProd.getProduct().getPrice();
         }
         totalText.setText(String.valueOf(total));
@@ -202,11 +193,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             super(itemView);
 
             textViewHead = itemView.findViewById(R.id.textViewHeading);
-            textDescription = itemView.findViewById(R.id.textDescription);
             imageView = itemView.findViewById(R.id.imageViewList);
             linearLayout = itemView.findViewById(R.id.linear_row_id);
-            decrementBtn = itemView.findViewById(R.id.DecrementBtn);
-            incrementBtn = itemView.findViewById(R.id.IncrementBtn);
         }
 
     }
