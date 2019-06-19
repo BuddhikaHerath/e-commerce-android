@@ -60,6 +60,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final OrderProducts orderProduct = orderProducts.get(position);
         holder.textViewHead.setText(String.valueOf(orderProduct.getProduct().getTitle()));
+        holder.txtQuantity.setText("Quantity : "+orderProduct.getQuantity());
+        holder.txtTotal.setText("$ "+(orderProduct.getQuantity()*orderProduct.getProduct().getPrice()) );
        // holder.textDescription.setText(String.valueOf(orderProduct.getQuantity()));
 
         System.err.println("image " + orderProduct.getProduct().getImage());
@@ -166,13 +168,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 //        });
 //    }
 
-    private void TotalCal() {
-        double total = 0;
-        for (OrderProducts orderProd : orderProducts) {
-            total += orderProd.getQuantity() * orderProd.getProduct().getPrice();
-        }
-        totalText.setText(String.valueOf(total));
-    }
+//    private void TotalCal() {
+//        double total = 0;
+//        for (OrderProducts orderProd : orderProducts) {
+//            total += orderProd.getQuantity() * orderProd.getProduct().getPrice();
+//        }
+//        totalText.setText(String.valueOf(total));
+//    }
 
     @Override
     public int getItemCount() {
@@ -181,11 +183,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewHead;
-        public TextView textDescription;
+        public TextView txtQuantity;
+        public TextView txtTotal;
         public ImageView imageView;
-        public Button decrementBtn;
-        public Button incrementBtn;
-
         public LinearLayout linearLayout;
 
 
@@ -195,6 +195,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             textViewHead = itemView.findViewById(R.id.textViewHeading);
             imageView = itemView.findViewById(R.id.imageViewList);
             linearLayout = itemView.findViewById(R.id.linear_row_id);
+            txtQuantity = itemView.findViewById(R.id.txtQuantity);
+            txtTotal = itemView.findViewById(R.id.txtTotal);
         }
 
     }

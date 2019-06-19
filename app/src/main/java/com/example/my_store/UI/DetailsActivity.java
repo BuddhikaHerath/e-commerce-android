@@ -10,6 +10,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +36,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     private Product product;
     private Button addtocart,decrementBtn,incrementBtn;
-    private ImageView mobimage;
+    private ImageView mobimage,btnBack;
     private TextView pmodel, pcompany, pPrice, pdetails, txtQuantity, txtTotal;
+    private LinearLayout qtyChangeLayout;
     private Long id;
     private int qty = 1;
 
@@ -58,6 +60,33 @@ public class DetailsActivity extends AppCompatActivity {
         incrementBtn = findViewById(R.id.details_IncrementBtn);
         txtQuantity = findViewById(R.id.product_qty);
         txtTotal = findViewById(R.id.productTotal);
+        btnBack = findViewById(R.id.backBtn);
+        qtyChangeLayout = findViewById(R.id.qtyChangeLayout);
+
+        addtocart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddToCart(v);
+            }
+        });
+        decrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decrementQty(v);
+            }
+        });
+        incrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                incrementQty(v);
+            }
+        });
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backBtnClick();
+            }
+        });
 
         Intent intent = new Intent();
 
@@ -101,7 +130,15 @@ public class DetailsActivity extends AppCompatActivity {
                         mobimage.setImageBitmap(decodedByte);
 
                         txtQuantity.setText(String.valueOf(qty));
-                        txtTotal.setText(String.valueOf(qty*product.getPrice()));
+
+
+                        if(product.getQuantity()<=0){
+                            addtocart.setVisibility(View.INVISIBLE);
+                            qtyChangeLayout.setVisibility(View.INVISIBLE);
+                            txtTotal.setText(String.valueOf("Out of stock"));
+                        }else{
+                            txtTotal.setText(String.valueOf(qty*product.getPrice()));
+                        }
                     }
                 }
 
@@ -115,26 +152,13 @@ public class DetailsActivity extends AppCompatActivity {
             });
         }
 
-        addtocart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddToCart(v);
-            }
-        });
-        decrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                decrementQty(v);
-            }
-        });
-        incrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                incrementQty(v);
-            }
-        });
 
 
+
+    }
+
+    private void backBtnClick() {
+        finish();
     }
 
     private void incrementQty(View view) {
@@ -160,6 +184,7 @@ public class DetailsActivity extends AppCompatActivity {
 //                    Intent intent = new Intent(getApplicationContext(), CartActivity.class);
 //                    startActivity(intent);
                 }else{
+                    Toast.makeText(getApplicationContext(), "Maximum reached!", Toast.LENGTH_SHORT);
                     System.err.println("Increment un-Successfully!");
                 }
             }
@@ -194,6 +219,7 @@ public class DetailsActivity extends AppCompatActivity {
 //                    Intent intent = new Intent(getApplicationContext(), CartActivity.class);
 //                    startActivity(intent);
                 }else{
+                    Toast.makeText(getApplicationContext(), "Minimum reached!", Toast.LENGTH_SHORT);
                     System.err.println("Decrement un-Successfully!");
                 }
             }

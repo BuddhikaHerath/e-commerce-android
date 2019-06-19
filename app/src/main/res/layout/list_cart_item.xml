@@ -27,10 +27,18 @@
                 android:text="heading" />
 
             <TextView
+                android:id="@+id/txtQuantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Quantity" />
+
+            <TextView
+                android:id="@+id/txtTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="Total" />
 
             <ImageView
                 android:id="@+id/imageViewList"

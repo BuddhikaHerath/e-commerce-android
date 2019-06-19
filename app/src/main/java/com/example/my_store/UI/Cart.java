@@ -176,7 +176,7 @@ public class Cart extends AppCompatActivity {
             total+= price*qty;
         }
 
-        lblTotal.setText(String.valueOf(total));
+        lblTotal.setText("Grand Total : $ "+String.valueOf(total));
     }
 
 }

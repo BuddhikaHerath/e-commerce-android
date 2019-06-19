@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity {
                 user.setUsername(username.getText().toString());
                 user.setPassword(password.getText().toString());
 
-                String credential = user.getUsername() + ":" + user.getPassword();
-                String auth = Base64.encodeToString(credential.getBytes(), Base64.DEFAULT);
+//                String credential = user.getUsername() + ":" + user.getPassword();
+//                String auth = Base64.encodeToString(credential.getBytes(), Base64.DEFAULT);
 //                Intent intent = new Intent(LoginActivity.this, Product_List.class);
 //                startActivity(intent);
 
@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.commit();
 
                             Intent login = new Intent(LoginActivity.this, Navigation.class);
+                            login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(login);
                             finish();
                         }else{

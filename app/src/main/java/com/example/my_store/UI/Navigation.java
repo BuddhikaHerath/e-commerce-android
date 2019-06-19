@@ -1,6 +1,7 @@
 package com.example.my_store.UI;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -158,7 +159,15 @@ public class Navigation extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            SharedPreferences shared = getSharedPreferences("login",getApplicationContext().MODE_PRIVATE);
+            SharedPreferences.Editor editor = shared.edit();
+            editor.putString("username","");
+            editor.putString("password","");
+            editor.commit();
+
+            Intent intent = new Intent(this,LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
